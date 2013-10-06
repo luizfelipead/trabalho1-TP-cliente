@@ -1,8 +1,10 @@
 package org.ufrj.dcc.tp.trabalho1.client;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ClientSocket extends Thread {
@@ -10,11 +12,10 @@ public class ClientSocket extends Thread {
 	private String address = "";
 	
 	private Socket socket;
-	private ObjectOutputStream out;
-	private ObjectInputStream in;
-	private String message;
+	private DataOutputStream out;
+	private BufferedReader in;
 	
-	public ClientSocket(int port, String address) {
+	public ClientSocket(String address, int port) {
 		super();
 		this.port = port;
 		this.address = address;
@@ -23,14 +24,25 @@ public class ClientSocket extends Thread {
 			socket = new Socket(address, port);
 			System.out.println("Client Socket Connected to "+socket.getLocalAddress());
 			//2. get Input and Output streams
-			out = new ObjectOutputStream(socket.getOutputStream());
-			out.flush();
-			in = new ObjectInputStream(socket.getInputStream());
+			this.out = new DataOutputStream(socket.getOutputStream());
+			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
+
+	public DataOutputStream getOut() {
+		return out;
+	}
+
+	public BufferedReader getIn() {
+		return in;
+	}
+
+	public void close() throws IOException {
+		this.in.close();
+		this.out.close();
+		this.socket.close();
+		
+	}
 }
