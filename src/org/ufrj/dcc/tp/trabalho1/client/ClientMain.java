@@ -10,22 +10,19 @@ public class ClientMain {
 		Scanner sc = new Scanner(System.in);
 		try{
 			clientSocket = new ClientSocket("localhost", 2004);
-			new ServerMessageManager(clientSocket).start();
+			ServerMessageManager serverMessageManager = new ServerMessageManager(clientSocket);
+			serverMessageManager.start();
 			while (true){
 				System.out.println("Digite o texto: ");
 				String message = sc.nextLine();
-				System.out.println(sc);
-				clientSocket.getOut().writeBytes(message);
-	
+				clientSocket.getOut().println(message);
 			}
 		} catch (Exception e){
 			if (clientSocket!=null){
 				clientSocket.close();
 				sc.close();
 			}
-				
 		}
-		
 	}
 
 }

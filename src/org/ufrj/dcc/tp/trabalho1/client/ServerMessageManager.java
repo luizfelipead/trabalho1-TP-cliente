@@ -9,12 +9,18 @@ public class ServerMessageManager extends Thread {
 	public ServerMessageManager(ClientSocket clientSocket) throws IOException {
 		super();
 		this.clientSocket = clientSocket;
-		
+	}
+	
+	@Override
+	public void run(){
 		while(true){
-			String fromServer = clientSocket.getIn().readLine();
-			while (fromServer!=null){
+			String fromServer;
+			while (clientSocket.getIn().hasNextLine()){
+				fromServer = this.clientSocket.getIn().nextLine();
 				System.out.println(fromServer);
+				
 			}
+			
 		}
 	}
 	
