@@ -23,10 +23,10 @@ public class ServerMessageReceiverThread extends Thread {
 				while (clientSocket.getIn().hasNextLine()){
 					fromServer = this.clientSocket.getIn().nextLine();
 					ChatMessage message = GSON.fromJson(fromServer, ChatMessage.class);
-					if (message.getClientId()==0){
+					if (message.getFromClientId()==0){
 						System.out.println("SERVIDOR: "+message.getMessage());
 					} else {
-						System.out.println("<ID:"+message.getClientId()+"> disse: "+message.getMessage());
+						System.out.println("<ID:"+message.getFromClientId()+"> disse: "+message.getMessage());
 					}
 				}
 			}
