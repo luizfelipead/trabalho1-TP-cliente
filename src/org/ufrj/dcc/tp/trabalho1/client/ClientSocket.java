@@ -16,7 +16,7 @@ public class ClientSocket extends Thread {
 		//1. creating a socket to connect to the server
 		try{
 			socket = new Socket(address, port);
-			System.out.println("Client Socket Connected to "+socket.getLocalAddress());
+			System.out.println("[INFO] Client Socket Connected to "+socket.getInetAddress());
 			//2. get Input and Output streams
 			this.out = new PrintStream(socket.getOutputStream());
 			this.in = new Scanner(socket.getInputStream());

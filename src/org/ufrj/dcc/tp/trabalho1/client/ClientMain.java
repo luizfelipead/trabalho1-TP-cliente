@@ -6,18 +6,20 @@ import java.util.Scanner;
 public class ClientMain {
 
 	public static void main(String[] args) throws IOException {
+		
 		ClientSocket clientSocket = null;
 		Scanner sc = new Scanner(System.in);
+		
 		try{
 			clientSocket = new ClientSocket("localhost", 2004);
-			ServerMessageManager serverMessageManager = new ServerMessageManager(clientSocket);
+			ServerMessageReceiverThread serverMessageManager = new ServerMessageReceiverThread(clientSocket);
 			serverMessageManager.start();
 			while (true){
-				System.out.println("Digite o texto: ");
 				String message = sc.nextLine();
 				clientSocket.getOut().println(message);
 			}
 		} catch (Exception e){
+			e.printStackTrace();
 			if (clientSocket!=null){
 				clientSocket.close();
 				sc.close();
