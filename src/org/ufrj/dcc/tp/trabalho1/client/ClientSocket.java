@@ -10,7 +10,7 @@ public class ClientSocket extends Thread {
 	
 	public static final String GOODBYE_MSG = "EXIT";
 
-	private static final long TIME_TO_PING_SERVER = 30000;
+	private static final long TIME_TO_PING_SERVER = 10000;
 	
 	private Socket socket;
 	private PrintStream out;

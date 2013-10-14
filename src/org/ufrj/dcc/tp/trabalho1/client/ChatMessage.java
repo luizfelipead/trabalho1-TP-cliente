@@ -5,14 +5,17 @@ public class ChatMessage extends Message {
 	private int fromClientId;
 	private String message;
 	
-	public ChatMessage(String message, int type) {
-		this.message=message;
+	public ChatMessage(String message, int type, int toId, int fromId) {
+		this.message = message;
+		
 		this.setType(type);
+		this.setToId(toId);
+		this.setFromId(fromId);
 	}
 	
 	public ChatMessage(int clientId, String message, int type) {
 		this.message=message;
-		this.setType(type);
+		this.setToId(type);
 	}
 
 	public int getFromClientId() {

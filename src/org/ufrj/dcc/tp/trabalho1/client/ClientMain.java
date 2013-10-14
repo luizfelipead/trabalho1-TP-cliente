@@ -8,16 +8,17 @@ import org.ufrj.dcc.tp.trabalho1.client.views.ConsoleView;
 import com.google.gson.Gson;
 
 public class ClientMain {
-
 	public static void main(String[] args) throws IOException {
 		ClientSocket clientSocket = null;
 		Scanner sc = new Scanner(System.in);
 		final Gson GSON = new Gson();
-		
+		Client client;
 		try{
+			client = new Client(null);
 			clientSocket = new ClientSocket("localhost", 2004);
-			ServerMessageReceiverThread serverMessageManager = new ServerMessageReceiverThread(clientSocket, new ConsoleView());
+			ServerMessageReceiverThread serverMessageManager = new ServerMessageReceiverThread(clientSocket, new ConsoleView(), client);
 			serverMessageManager.start();
+			
 			while (true){
 				String message = sc.nextLine();
 				if (message.equals(ClientSocket.GOODBYE_MSG)){
@@ -25,7 +26,7 @@ public class ClientMain {
 					System.exit(0);
 					clientSocket.getOut().println(message);
 				} else{
-					ChatMessage chatMessage = new ChatMessage(message, ChatMessage.PUBLIC_MESSAGE);
+					ChatMessage chatMessage = new ChatMessage(message, ChatMessage.PUBLIC_MESSAGE, Message.SERVER_ID, client.getId());
 					clientSocket.getOut().println(GSON.toJson(chatMessage));
 				}
 			}

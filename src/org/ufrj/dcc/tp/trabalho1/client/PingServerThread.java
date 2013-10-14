@@ -39,7 +39,7 @@ public class PingServerThread extends TimerTask {
 	
 	@Override
 	public void run(){
-		ChatMessage message = new ChatMessage("", ChatMessage.PING);
+		ChatMessage message = new ChatMessage("", ChatMessage.PING, Message.SERVER_ID, Message.PING_ID);
 		out.println(GSON.toJson(message));
 	}
 

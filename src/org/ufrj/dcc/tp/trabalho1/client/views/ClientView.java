@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -16,8 +17,10 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 
 import org.ufrj.dcc.tp.trabalho1.client.ChatMessage;
+import org.ufrj.dcc.tp.trabalho1.client.Client;
 import org.ufrj.dcc.tp.trabalho1.client.ClientSocket;
 import org.ufrj.dcc.tp.trabalho1.client.ListClientsMessage;
+import org.ufrj.dcc.tp.trabalho1.client.Message;
 
 import com.google.gson.Gson;
 
@@ -29,12 +32,14 @@ public class ClientView implements View {
 	private JTextPane chatArea;
 	private JTextPane tpMessage;
 	final Gson GSON = new Gson();
+	private JList clients;
+	private Client client;
 	
 	public static ClientView getInstance(){
 		if(instance == null) instance = new ClientView();
 		return instance;
 	}
-
+	
 	/**
 	 * Launch the application.
 	 */
@@ -56,7 +61,8 @@ public class ClientView implements View {
 	 * Create the application.
 	 * @wbp.parser.entryPoint
 	 */
-	public ClientView() {
+	private ClientView() {
+		client = new Client(null);
 		initialize();
 	}
 
@@ -93,7 +99,7 @@ public class ClientView implements View {
 		chatArea.setBounds(12, 28, 318, 306);
 		frame.getContentPane().add(chatArea);
 		
-		JList clients = new JList();
+		clients = new JList();
 		clients.setBounds(342, 28, 196, 389);
 		frame.getContentPane().add(clients);
 		
@@ -104,8 +110,25 @@ public class ClientView implements View {
 		JButton btnNewButton = new JButton("Enviar");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ChatMessage chatMessage = new ChatMessage(tpMessage.getText(), ChatMessage.PUBLIC_MESSAGE);
+				Client toClient = (Client) clients.getSelectedValue();
+				ChatMessage chatMessage;
+				
+				if (toClient == null || toClient.getId() == Message.SERVER_ID) {
+					chatMessage = new ChatMessage(tpMessage.getText(), ChatMessage.PUBLIC_MESSAGE, Message.SERVER_ID, getClient().getId());
+				} else {
+					chatMessage = new ChatMessage(tpMessage.getText(), ChatMessage.PRIVATE_MESSAGE, toClient.getId(), getClient().getId());
+				}
+				
 				clientSocket.getOut().println(GSON.toJson(chatMessage));
+				
+				StyledDocument doc = chatArea.getStyledDocument();
+				
+				try {
+					doc.insertString(doc.getLength(), "<Eu> disse: "+tpMessage.getText()+"\n", null);
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
+				
 				tpMessage.setText("");
 			}
 		});
@@ -138,6 +161,21 @@ public class ClientView implements View {
 
 	@Override
 	public void showClients(ListClientsMessage message) {
+		DefaultListModel models = new DefaultListModel();
 		
+		models.addElement(new Client(Message.PUBLIC_MESSAGE));
+		
+		for (Integer id : message.getClientsIds()) {
+			models.addElement(new Client(id));
+		}
+		clients.setModel(models);
+	}
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
 	}
 }

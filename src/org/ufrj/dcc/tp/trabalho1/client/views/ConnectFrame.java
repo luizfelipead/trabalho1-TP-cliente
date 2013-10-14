@@ -64,7 +64,7 @@ public class ConnectFrame extends JFrame {
 				view.setClientSocket(new ClientSocket(tfIp.getText(), new Integer(tfPort.getText())));
 				ServerMessageReceiverThread serverMessageManager;
 				try {
-					serverMessageManager = new ServerMessageReceiverThread(view.getClientSocket(), view);
+					serverMessageManager = new ServerMessageReceiverThread(view.getClientSocket(), view, view.getClient());
 					serverMessageManager.start();
 					ConnectFrame.getInstance().setVisible(false);
 				} catch (IOException e) {
