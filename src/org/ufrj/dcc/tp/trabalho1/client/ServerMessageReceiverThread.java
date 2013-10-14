@@ -26,8 +26,14 @@ public class ServerMessageReceiverThread extends Thread {
 			while(true){
 				while (clientSocket.getIn().hasNextLine()){
 					fromServer = this.clientSocket.getIn().nextLine();
-					ChatMessage message = GSON.fromJson(fromServer, ChatMessage.class);
-					view.showMessage(message);
+					
+					Message message = GSON.fromJson(fromServer, Message.class);
+					
+					if (message.getType() == Message.LIST_CLIENT) {
+						view.showClients(GSON.fromJson(fromServer, ListClientsMessage.class));
+					} else {
+						view.showMessage(GSON.fromJson(fromServer, ChatMessage.class));
+					}
 				}
 			}
 			

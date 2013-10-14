@@ -17,6 +17,7 @@ import javax.swing.text.StyledDocument;
 
 import org.ufrj.dcc.tp.trabalho1.client.ChatMessage;
 import org.ufrj.dcc.tp.trabalho1.client.ClientSocket;
+import org.ufrj.dcc.tp.trabalho1.client.ListClientsMessage;
 
 import com.google.gson.Gson;
 
@@ -133,5 +134,10 @@ public class ClientView implements View {
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void showClients(ListClientsMessage message) {
+		
 	}
 }

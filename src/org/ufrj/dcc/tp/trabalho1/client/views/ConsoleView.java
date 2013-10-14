@@ -1,6 +1,7 @@
 package org.ufrj.dcc.tp.trabalho1.client.views;
 
 import org.ufrj.dcc.tp.trabalho1.client.ChatMessage;
+import org.ufrj.dcc.tp.trabalho1.client.ListClientsMessage;
 
 public class ConsoleView implements View {
 
@@ -13,4 +14,11 @@ public class ConsoleView implements View {
 		}
 	}
 
+	@Override
+	public void showClients(ListClientsMessage message) {
+		System.out.println("Clientes conectados:");
+		for (Integer id : message.getClientsIds()) {
+			System.out.println("<ID:"+id+">");
+		}
+	}
 }
