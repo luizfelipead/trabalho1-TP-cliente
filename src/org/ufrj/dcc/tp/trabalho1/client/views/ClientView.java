@@ -48,7 +48,6 @@ public class ClientView implements View {
 			public void run() {
 				try {
 					ClientView window = ClientView.getInstance();
-					window.connectFrame = ConnectFrame.getInstance();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -63,6 +62,7 @@ public class ClientView implements View {
 	 */
 	private ClientView() {
 		client = new Client(null);
+		connectFrame = ConnectFrame.getInstance();
 		initialize();
 	}
 
@@ -78,20 +78,27 @@ public class ClientView implements View {
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
-		JMenu mnTpMessager = new JMenu("TP Messager");
-		menuBar.add(mnTpMessager);
+		JMenu mnTpMessenger = new JMenu("TP Messenger");
+		menuBar.add(mnTpMessenger);
 		
-		JMenuItem mntmConect = new JMenuItem("Conectar");
-		mntmConect.addActionListener(new ActionListener() {
+		final JMenuItem mntmConnect = new JMenuItem("Conectar");
+		mntmConnect.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				connectFrame.setVisible(true);
 			}
 		});
-		mnTpMessager.add(mntmConect);
+		mnTpMessenger.add(mntmConnect);
 		
 		JMenuItem mntmExit = new JMenuItem("Sair");
-		mnTpMessager.add(mntmExit);
+		mntmExit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		mnTpMessenger.add(mntmExit);
+		
 		frame.getContentPane().setLayout(null);
 		
 		chatArea = new JTextPane();
@@ -134,6 +141,16 @@ public class ClientView implements View {
 		});
 		btnNewButton.setFont(new Font("Dialog", Font.BOLD, 12));
 		btnNewButton.setBounds(249, 388, 81, 29);
+		
+		connectFrame.addOnConnectListener(new ConnectFrame.OnConnectListener(){
+
+			@Override
+			public void onConnect() {
+				mntmConnect.setEnabled(false);
+			}
+			
+		});	
+		
 		frame.getContentPane().add(btnNewButton);
 	}
 

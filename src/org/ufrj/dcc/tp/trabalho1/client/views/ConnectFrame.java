@@ -3,6 +3,8 @@ package org.ufrj.dcc.tp.trabalho1.client.views;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,6 +24,8 @@ public class ConnectFrame extends JFrame {
 	private JButton btnConnectButton;
 	private static ConnectFrame instance;
 	
+	private List<OnConnectListener> listeners;
+	
 	public static ConnectFrame getInstance() {
 		if(instance == null) instance = new ConnectFrame();
 		return instance;
@@ -29,7 +33,7 @@ public class ConnectFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ConnectFrame() {
+	private ConnectFrame() {
 		setResizable(false);
 		setBounds(100, 100, 450, 200);
 		contentPane = new JPanel();
@@ -67,11 +71,29 @@ public class ConnectFrame extends JFrame {
 					serverMessageManager = new ServerMessageReceiverThread(view.getClientSocket(), view, view.getClient());
 					serverMessageManager.start();
 					ConnectFrame.getInstance().setVisible(false);
+					
+					for (OnConnectListener listener : listeners) {
+						listener.onConnect();
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}			
 			}
 		});
 		contentPane.add(btnConnectButton);
+		
+		listeners = new ArrayList<OnConnectListener>();
 	}
+	
+	
+	public void addOnConnectListener(OnConnectListener onConnectListener) {
+		this.listeners.add(onConnectListener);
+	}
+	
+	public interface OnConnectListener {
+		
+		public void onConnect();
+		
+	}
+	
 }
