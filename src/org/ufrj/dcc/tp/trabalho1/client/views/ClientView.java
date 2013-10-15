@@ -4,6 +4,10 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -35,6 +39,10 @@ public class ClientView implements View {
 	private JList clients;
 	private Client client;
 	
+	
+	private Map<Integer, String> clientsNames;
+	
+	
 	public static ClientView getInstance(){
 		if(instance == null) instance = new ClientView();
 		return instance;
@@ -61,7 +69,7 @@ public class ClientView implements View {
 	 * @wbp.parser.entryPoint
 	 */
 	private ClientView() {
-		client = new Client(null);
+		client = new Client(null, null);
 		connectFrame = ConnectFrame.getInstance();
 		initialize();
 	}
@@ -70,7 +78,7 @@ public class ClientView implements View {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
+		frame = new JFrame("Chat");
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 550, 469);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -114,7 +122,7 @@ public class ClientView implements View {
 		tpMessage.setBounds(12, 363, 225, 54);
 		frame.getContentPane().add(tpMessage);
 		
-		JButton btnNewButton = new JButton("Enviar");
+		final JButton btnNewButton = new JButton("Enviar");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Client toClient = (Client) clients.getSelectedValue();
@@ -131,7 +139,7 @@ public class ClientView implements View {
 				StyledDocument doc = chatArea.getStyledDocument();
 				
 				try {
-					doc.insertString(doc.getLength(), "<Eu> disse: "+tpMessage.getText()+"\n", null);
+					doc.insertString(doc.getLength(), "Eu disse: "+tpMessage.getText()+"\n", null);
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
@@ -147,9 +155,36 @@ public class ClientView implements View {
 			@Override
 			public void onConnect() {
 				mntmConnect.setEnabled(false);
+				
+				frame.setTitle(frame.getTitle() + " - " + client.getName());
 			}
 			
 		});	
+		
+		
+		tpMessage.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == 10) {
+					btnNewButton.doClick();
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == 10) {
+					tpMessage.setText("");
+				}
+			}
+			
+		});
+		
+
 		
 		frame.getContentPane().add(btnNewButton);
 	}
@@ -169,7 +204,7 @@ public class ClientView implements View {
 			if (message.getFromClientId()==0){
 				doc.insertString(doc.getLength(), "SERVIDOR: "+message.getMessage()+"\n", null);
 			} else {
-				doc.insertString(doc.getLength(), "<ID:"+message.getFromClientId()+"> disse: "+message.getMessage()+"\n", null);
+				doc.insertString(doc.getLength(), clientsNames.get(message.getFromClientId())+" disse: "+message.getMessage()+"\n", null);
 			}
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -178,12 +213,14 @@ public class ClientView implements View {
 
 	@Override
 	public void showClients(ListClientsMessage message) {
+		clientsNames = message.getClientsIds();
+		
 		DefaultListModel models = new DefaultListModel();
 		
-		models.addElement(new Client(Message.PUBLIC_MESSAGE));
+		models.addElement(new Client(Message.PUBLIC_MESSAGE, "Todos"));
 		
-		for (Integer id : message.getClientsIds()) {
-			models.addElement(new Client(id));
+		for (Entry<Integer, String> client : clientsNames.entrySet()) {
+			models.addElement(new Client(client.getKey(), client.getValue()));
 		}
 		clients.setModel(models);
 	}

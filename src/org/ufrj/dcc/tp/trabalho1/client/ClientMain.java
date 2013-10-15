@@ -14,7 +14,7 @@ public class ClientMain {
 		final Gson GSON = new Gson();
 		Client client;
 		try{
-			client = new Client(null);
+			client = new Client(null, null);
 			clientSocket = new ClientSocket("localhost", 2004);
 			ServerMessageReceiverThread serverMessageManager = new ServerMessageReceiverThread(clientSocket, new ConsoleView(), client);
 			serverMessageManager.start();

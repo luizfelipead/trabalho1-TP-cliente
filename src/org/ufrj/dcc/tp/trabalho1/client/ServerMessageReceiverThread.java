@@ -35,6 +35,9 @@ public class ServerMessageReceiverThread extends Thread {
 						view.showClients(GSON.fromJson(fromServer, ListClientsMessage.class));
 					} else if (message.getType() == Message.SET_ID) {
 						client.setId(message.getToId());
+						
+						NameMessage nameMessage = new NameMessage(client.getName(), client.getId());
+						clientSocket.getOut().println(GSON.toJson(nameMessage));
 					} else {
 						view.showMessage(GSON.fromJson(fromServer, ChatMessage.class));
 					}

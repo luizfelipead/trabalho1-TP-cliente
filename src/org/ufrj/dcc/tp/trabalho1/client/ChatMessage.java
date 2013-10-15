@@ -18,6 +18,11 @@ public class ChatMessage extends Message {
 		this.setToId(type);
 	}
 
+	public ChatMessage(String message, int clientId) {
+		this.message = message;
+		this.fromClientId = clientId;
+	}
+
 	public int getFromClientId() {
 		return fromClientId;
 	}
