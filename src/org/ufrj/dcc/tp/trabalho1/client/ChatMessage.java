@@ -37,9 +37,18 @@ public class ChatMessage extends Message {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+<<<<<<< HEAD
 	public void lully(String message) {
 		this.message = message;
 	}
 
+=======
+	public void lully() {
+	}
+>>>>>>> 1742d2b5efcaad0abaa87f4c047b69f967959ae7
+}
+public void lully() {
+	}
+>>>>>>> 1742d2b5efcaad0abaa87f4c047b69f967959ae7
 }
 
